@@ -1,7 +1,7 @@
 import json
-from operator import index
 import os.path
 import sys
+
 
 def obter_dados():
     
@@ -9,72 +9,78 @@ def obter_dados():
         dados = json.loads(arq.read())
     return dados
 
-def listar_categorias(dados):
+def listar_categorias(dados: list):
     
-    categorias = []
+    listaDeCategoria = []
 
     for elemento in dados:
-        if elemento ['categoria'] not in categorias:
-            categorias.append(elemento['categoria'])  
-    return categorias
-
+        if elemento ['categoria'] not in listaDeCategoria:
+            listaDeCategoria.append(elemento['categoria'])  
+    return listaDeCategoria
     
     ...
+def valilar_categoria(lista):
 
-def listar_por_categoria(dados, categoria):
+    categoria = input('\nDigite a categoria desejada: ').lower().strip()
+
+    while categoria not in lista:
+        if categoria in lista:
+            pass
+        else:
+            categoria = input('\nDigite a categoria desejada: ').lower().strip()
+            
+    return categoria    
     
-    lista_categorias = []
+def listar_por_categoria(dados: list, categoria: str):
+    
+    produtoPorCategoria = []
 
     for elemento in dados:
-        if elemento['categoria'] in categoria:
-            lista_categorias.append(elemento)
-    return lista_categorias
+        if elemento['categoria'] == categoria:
+            produtoPorCategoria.append(elemento)
+    return produtoPorCategoria
   
     ...
 
-def produto_mais_caro(dados, categoria):
+def produto_mais_caro(dados: list, categoria: str):
            
-    preco_caro = float(dados[0]['preco'])
+    maiorPreco = float(dados[0]['preco'])
 
     for elemento in dados:
         
-        if float(elemento['preco']) > preco_caro and elemento['categoria'] == categoria:
-            preco_caro = float(elemento['preco'])
-            produto_caro = elemento
-    return produto_caro  
+        if float(elemento['preco']) > maiorPreco and elemento['categoria'] == categoria:
+            maiorPreco = float(elemento['preco'])
+            produtoMaisCaro= elemento
+    return produtoMaisCaro 
 
     ...
 
-def produto_mais_barato(dados, categoria):
+def produto_mais_barato(dados: list, categoria: str):
     
-    preco_barato = float(dados[0]['preco'])
+    menorPreco = float(dados[0]['preco'])
 
     for elemento in dados:
 
-        if float(elemento['preco']) < preco_barato and elemento['categoria'] == categoria:
-            preco_barato = float(elemento['preco'])
-            produto_barato = elemento
-    return produto_barato
+        if float(elemento['preco']) < menorPreco and elemento['categoria'] == categoria:
+            menorPreco = float(elemento['preco'])
+            produtoMaisBarato = elemento
+    return produtoMaisBarato
 
     ...
 
-def top_10_caros(dados):
+def top_10_caros(dados: list):
         
-    for elemento in dados:
-
-        maior = sorted(dados, key = lambda x: float(x['preco']), reverse = True)  
+    maisBarato = sorted(dados, key = lambda x: float(x['preco']), reverse = True)  
     
-    return maior        
+    return maisBarato        
     
     ...
 
-def top_10_baratos(dados):
-    
-    for elemento in dados:
+def top_10_baratos(dados: list):    
 
-        menor = sorted(dados, key = lambda x: [float(x['preco'])])        
+    maisCaro = sorted(dados, key = lambda x: [float(x['preco'])])        
        
-    return  menor
+    return  maisCaro
     ...
 
 def linha(tam = 42):
@@ -85,100 +91,117 @@ def cabecalho(txt):
     print(txt.center(42))
     print(linha())
 
+def imprimir_dicionario(dicionario: dict):
+
+
+    print(f'\nID: {dicionario["id"]}')
+    print(f'PREÇO: R$ {dicionario["preco"]}')
+    print(f'CATEGORIA: {str(dicionario["categoria"]).capitalize()}')
+      
+
 def menu_opcoes():
 
-    lista_opcoes = ['Sair',
-    'Listar categorias',
-    'Listar produtos de uma categoria',
-    'Produto mais caro por categoria',
-    'Produto mais barato por categoria',
-    'Top 10 produtos mais caros',
-    'Top 10 produtos mais baratos' ]
+    listaOpcoes = ['Sair', 'Listar categorias', 'Listar produtos de uma categoria', 'Produto mais caro por categoria',
+    'Produto mais barato por categoria','Top 10 produtos mais caros','Top 10 produtos mais baratos']
     
     numero_opcao = 0
     cabecalho('MENU DE OPÇÕES')
-    for item in lista_opcoes:
-       print(f'\033[33m{numero_opcao}\033[m - \033[034m{item}\033[m')
+    for item in listaOpcoes:
+       print(f'{numero_opcao} - {item}')
        numero_opcao += 1
     print(linha())
 
+def exibir_opcao_selecionada (lista: list, indice: int) -> str:
+
+    opcaoSelecionada = print(f'\n{lista[indice].center(80).upper()}')
+
+    return opcaoSelecionada
+
+def valilar_categoria(lista):
+
+    categoria = input('\nDigite a categoria desejada: ').lower().strip()    
+
+    while categoria not in lista:
+
+        categoria = input('\nCategoria inválida/Inexistente! Digite novamente a categoria desejada: ').lower().strip()    
+
+    return categoria
+
 def menu(dados):
-    lista_opcoes = ['Sair',
-    'Listar categorias',
-    'Listar produtos de uma categoria',
-    'Produto mais caro por categoria',
-    'Produto mais barato por categoria',
-    'Top 10 produtos mais caros',
-    'Top 10 produtos mais baratos' ]
 
-    opcao_usuario = type(int)
     
-    while opcao_usuario != 0:
+    listaOpcoes = ['Sair', 'Listar categorias', 'Listar produtos de uma categoria', 'Produto mais caro por categoria',
+    'Produto mais barato por categoria','Top 10 produtos mais caros','Top 10 produtos mais baratos']
 
+    opcaoUsuario = type(int)
+    
+    while opcaoUsuario != 0:
+
+        
         menu_opcoes()
-        opcao_usuario = int(input('\nDigite a opção desejada: '))
+        opcaoUsuario = input('\nDigite a opção desejada: ')
+        if opcaoUsuario.isdigit():
+            opcaoUsuario= int(opcaoUsuario)
         linha()
-                       
-        if opcao_usuario == 1:
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}')                       
-            categorias = sorted(listar_categorias(dados))
+        listaCategoria = listar_categorias(dados)       
+           
+        if opcaoUsuario == 1:
+
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario)                    
+            categoriaOrdenada = sorted(listar_categorias(dados))
             
-            for i in range(1, len(categorias)- 1):
-                print(f'{i} - {str(categorias[i].capitalize())}')
+            for i in range(1, len(categoriaOrdenada)- 1):
+                print(f'{i} - {str(categoriaOrdenada[i].capitalize())}')
             
-            print()
+        elif opcaoUsuario == 2:
 
-        elif opcao_usuario == 2:
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario)  
+            categoria = valilar_categoria(listaCategoria)              
+            listagemPorCategorias = listar_por_categoria(dados, categoria)
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}') 
-            categoria = str(input('\nDigite a categoria desejada: ')).lower()
-            linha()
-            listagem_por_categorias = listar_por_categoria(dados, categoria)
+            for i in range(0, len(listagemPorCategorias)):
+                imprimir_dicionario(listagemPorCategorias[i])
 
-            for i in range(0, len(listagem_por_categorias)):
-                print(f'\nID: {listagem_por_categorias[i]["id"]} ................... PREÇO: R$ {listagem_por_categorias[i]["preco"]}')
+        elif opcaoUsuario == 3:   
 
-        elif opcao_usuario == 3:   
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario) 
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}')  
-            categoria = str(input('\nDigite a categoria desejada: ')).lower()
-            linha()
+            categoria = valilar_categoria(listaCategoria)
             maior_preco = produto_mais_caro(dados, categoria)
-            print(f'\nID: {maior_preco["id"]} ................... PREÇO: R$ {maior_preco["preco"]} \n')
+            imprimir_dicionario(maior_preco)
 
-        elif opcao_usuario == 4:
+        elif opcaoUsuario == 4:
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}')  
-            categoria = str(input('\nDigite a categoria desejada: ')).lower()
-            linha()
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario)
+            categoria = valilar_categoria(listaCategoria)   
             menor_preco = produto_mais_barato(dados, categoria)
-            print(f'\nID: {menor_preco["id"]} ................... PREÇO: R$ {menor_preco["preco"]} \n') 
+            imprimir_dicionario(menor_preco)
 
-        elif opcao_usuario == 5:
+        elif opcaoUsuario == 5:
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}')  
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario) 
             for i in range (0, 10):
                 top_10 = top_10_caros(dados)
-                print(f'\n{i+1} - ID: {top_10[i]["id"]} PREÇO: R$ {top_10[i]["preco"]} CATEGORIA: {top_10[i]["categoria"]}')
+                imprimir_dicionario(top_10[i])
 
-        elif opcao_usuario == 6:
+        elif opcaoUsuario == 6:
 
-            print(f'\n{lista_opcoes[opcao_usuario].center(80).upper()}')  
+            exibir_opcao_selecionada(listaOpcoes, opcaoUsuario) 
             for i in range (0, 10):
                 top_10 = top_10_baratos(dados)
-                print(f'\n{i+1} - ID: {top_10[i]["id"]} PREÇO: R$ {top_10[i]["preco"]} CATEGORIA: {top_10[i]["categoria"]}')
+                imprimir_dicionario(top_10[i])
 
-        elif opcao_usuario == 0:
-            print('\nSAINDO...\n\nPROGRAMA FINALIZADO COM SUCESSO!')
+        elif opcaoUsuario == 0:
+
+            print('\nSAINDO...\n\nPROGRAMA FINALIZADO COM SUCESSO!\n')
 
         else:
 
             print()
-            print(f'OPÇÃO DIGITADA INVÁLIDA! TENTE NOVAMENTE..\n')
-    
-...
+            print(f'OPÇÃO INVÁLIDA! TENTE NOVAMENTE..\n')
 
+...
 
 # Programa Principal - não modificar!
 dados = obter_dados()
